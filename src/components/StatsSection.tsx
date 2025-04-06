@@ -1,9 +1,15 @@
-"use server";
+"use client";
+import { startTransition, useEffect, useState } from "react";
 
-import { pool } from "@/lib/pool";
-
-async function StatsSection() {
-  const query = await pool.query('SELECT calculate_total_value(2022,2024,593,110)');
+function StatsSection() {
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    startTransition(async () => {
+      const res = await fetch("/total");
+      const data = await res.json();
+      setTotal(data);
+    });
+  }, []);
   return (
     <section id="stats" className="light-bg-section py-16">
       <div className="container mx-auto px-4">
@@ -21,7 +27,7 @@ async function StatsSection() {
             />
             <div>
               INDICE:
-              {query.rows[0].calculate_total_value}
+              {total}
             </div>
             <h3 className="text-3xl font-bold text-primary mb-1">450+</h3>
             <h4 className="font-semibold text-primary mb-2">Publicaciones</h4>
